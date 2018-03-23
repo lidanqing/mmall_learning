@@ -43,13 +43,13 @@ public class CategoryManagerController {
 
     @RequestMapping("set_category_name.do")
     @ResponseBody
-    public ServerResponse setCategoryName(HttpSession session, Integer categoryId, String categotyName){
+    public ServerResponse setCategoryName(HttpSession session, Integer categoryId, String categoryName){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，请登录");
         }
         if(iUserService.checkAdminRole(user).isSuccess()){
-            return iCategoryService.updateCategoryName(categoryId,categotyName);
+            return iCategoryService.updateCategoryName(categoryId,categoryName);
         }else{
             return ServerResponse.createByErrorMessage("无操作权限，需要管理员操作权限");
         }

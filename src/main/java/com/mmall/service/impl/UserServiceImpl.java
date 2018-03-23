@@ -178,10 +178,17 @@ public class UserServiceImpl implements IUserService {
         if(user == null){
             return ServerResponse.createByErrorMessage("找不到当前用户");
         }
-        //??????
+        //防止返回的data中密码被别人看到
         user.setPassword(org.apache.commons.lang3.StringUtils.EMPTY);
         return ServerResponse.createBySuccess(user);
+    }
 
+    //backend
+    public ServerResponse checkAdminRole(User user){
+        if(user != null && user.getRole() == Const.Role.ROLE_ADMIN){
+            return ServerResponse.createBySuccess();
+        }
+        return ServerResponse.createByError();
     }
 
 }

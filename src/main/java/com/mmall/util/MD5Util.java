@@ -4,7 +4,7 @@ package com.mmall.util;
 import java.security.MessageDigest;
 
 /**
- * Created by geely
+ * Created by li
  */
 public class MD5Util {
 

@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 import java.util.Properties;
 
 /**
- * Created by geely
+ * Created by li
  */
 public class PropertiesUtil {
 
@@ -17,6 +17,7 @@ public class PropertiesUtil {
 
     private static Properties props;
 
+    //tomcat启动时就读取
     static {
         String fileName = "mmall.properties";
         props = new Properties();

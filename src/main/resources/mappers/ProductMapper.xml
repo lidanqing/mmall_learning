@@ -181,6 +181,7 @@
     SELECT
     <include refid="Base_Column_List"/>
     form mmall_product
+    /*pagehelper会自动的在后面加上比如limit 10 offset 1,所以末尾不要加分号*/
     ORDER BY id asc
   </select>
 
@@ -188,6 +189,7 @@
   SELECT
   <include refid="Base_Column_List"/>
   from mmall_product
+  /*写成where 1=1就比较low了 where标签是mybatis提供的*/
   <where>
     <if test="productName != null">
       and name like #{productName}

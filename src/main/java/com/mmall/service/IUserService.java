@@ -5,6 +5,7 @@ import com.mmall.pojo.User;
 
 /**
  * Created by li
+ * 用接口可以为以后的AOP代理做准备
  */
 public interface IUserService {
 

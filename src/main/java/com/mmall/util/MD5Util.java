@@ -47,6 +47,7 @@ public class MD5Util {
     }
 
     public static String MD5EncodeUtf8(String origin) {
+        //MD5加盐值，增加MD5复杂度，随着时间积累，MD5字典收集的MD5越来越多，加盐值后更难破解
         origin = origin + PropertiesUtil.getProperty("password.salt", "");
        return MD5Encode(origin, "utf-8");
     }

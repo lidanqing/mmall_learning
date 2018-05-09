@@ -37,6 +37,7 @@
       #{email,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{question,jdbcType=VARCHAR}, 
       #{answer,jdbcType=VARCHAR}, #{role,jdbcType=INTEGER}, now(),
       now())
+      /*创建时间和更新时间不再业务代码中控制了，通过db的内置函数now()来完成*/
   </insert>
   <insert id="insertSelective" parameterType="com.mmall.pojo.User" >
     insert into mmall_user
@@ -154,6 +155,7 @@
 
   <select id="checkUsername" resultType="int" parameterType="string" >
     select count(1) from mmall_user
+    /*用#防止sql注入，预编译*/
     where username = #{username}
   </select>
 
@@ -162,8 +164,17 @@
     where email = #{email}
   </select>
 
+  <!--返回的是User对象，在上面已经用BaseResultMap声明了
+  #{}:表示一个占位符;
+    #{id}:其中Id表示接收输入的参数，参数名称就是Id,如果输入参数是简单类型，
+    #{}中的参数名可以任意，可以是value或者其它名称;
+     ${}:表示拼接sql字符串，将接收到的参数内容不加任何修饰拼接在sql中.
+    使用${}拼接sql，可能会引起sql注入
+    ${value}:接收输入参数的内容，如果传入的是简单类型,${}中只能使用value-->
+  <!--小写的map会自动识别成java.util.Map-->
   <select id="selectLogin" resultMap="BaseResultMap" parameterType="map">
     SELECT
+    /*要什么查什么，不要select* */
     <include refid="Base_Column_List" />
     from mmall_user
     where username = #{username}

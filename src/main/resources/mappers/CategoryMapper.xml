@@ -116,6 +116,7 @@
     update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <!--返回的List mybatis已经封装好了-->
   <select id="selectCategoryChildrenByParentId" parameterType="int" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List"/>

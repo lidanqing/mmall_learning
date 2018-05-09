@@ -20,6 +20,7 @@ public class TokenCache{
                 //默认的数据加载实现，当调用get取值的时候，如果key没有对应的值，就调用这个方法进行加载。
                 @Override
                 public String load(String s) throws Exception {
+                    //替换成一个字符串型的null，不是纯粹的null，防止equals时空指针异常
                     return "null";
                 }
             });

@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Created by li
  */
 @JsonSerialize(include =  JsonSerialize.Inclusion.NON_NULL)
-//保证序列化json的时候,如果是null的对象,key也会消失
+//保证序列化json的时候,如果是null的对象,key也会消失，比如登录失败时只有status和msg，没有data
 public class ServerResponse<T> implements Serializable {
 
     private int status;
@@ -36,7 +36,7 @@ public class ServerResponse<T> implements Serializable {
     }
 
     @JsonIgnore
-    //使之不在json序列化结果当中
+    //使isSuccess字段不在json序列化结果当中
     public boolean isSuccess(){
         return this.status == ResponseCode.SUCCESS.getCode();
     }
@@ -51,7 +51,8 @@ public class ServerResponse<T> implements Serializable {
         return msg;
     }
 
-
+    //第一个<T>是固定语法 可以理解为在这个方法中使用的泛型用符号T表示，当然你也可以用别的名字。
+    //ServerResponse<T> 说明类型ServerResponse的定义中也使用了泛型 public class ServerResponse<T> {}
     public static <T> ServerResponse<T> createBySuccess(){
         return new ServerResponse<T>(ResponseCode.SUCCESS.getCode());
     }

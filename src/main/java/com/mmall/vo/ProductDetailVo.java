@@ -20,8 +20,9 @@ public class ProductDetailVo {
     private String createTime;
     private String updateTime;
 
-
+    //图片服务器url前缀
     private String imageHost;
+    //父分类
     private Integer parentCategoryId;
 
     public Integer getId() {

@@ -49,6 +49,7 @@ public class CategoryServiceImpl implements ICategoryService {
         category.setId(categoryId);
         category.setName(categoryName);
 
+        //setId的目的是updateByPrimaryKeySelective也是根据id进行选择性更新的
         int rowCount = categoryMapper.updateByPrimaryKeySelective(category);
         if(rowCount > 0){
             return ServerResponse.createBySuccessMessage("更新品类名字成功");
@@ -65,6 +66,7 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     public ServerResponse selectCategoryAndChildrenById(Integer categoryId){
+        //guava提供的方法
         Set<Category> categorySet = Sets.newHashSet();
         findChildCategory(categorySet,categoryId);
 

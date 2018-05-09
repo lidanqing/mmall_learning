@@ -6,6 +6,7 @@
 
     <display-name>Archetype Created Web Application</display-name>
 
+    <!--spring的转码控制-->
     <filter>
         <filter-name>characterEncodingFilter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
@@ -23,11 +24,13 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-
+    <!--web容器启动和关闭的监听器-->
     <listener>
         <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
     </listener>
 
+    <!--将web容器和Spring容器进行整合的一个监听器，ContextLoaderListener会通过spring配置文件
+    applicationContext.xml将两者进行整合，它会加载applicationContext.xml-->
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
@@ -38,9 +41,19 @@
         </param-value>
     </context-param>
 
+    <!--springMVC拦截，load-on-startup>=0时在启动时就会加载-->
     <servlet>
         <servlet-name>dispatcher</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <!--可以通过下面的配置修改springmvc配置文件的名字，默认是dispatcher-servlet-->
+        <!--<init-param>
+            <param-name>
+                contextConfigLocation
+            </param-name>
+            <param-value>
+                /WEB-INF/XX
+            </param-value>
+        </init-param>-->
         <load-on-startup>1</load-on-startup>
     </servlet>
 

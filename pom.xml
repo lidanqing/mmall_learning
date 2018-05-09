@@ -182,7 +182,8 @@
 
 
     <!-- mybatis pager -->
-
+    <!--通过AOP在执行mysql时进行截获，再执行相关的其他mysql语句-->
+    <!--mybatis可以监听到切面，自动把分页用到的sql语句再执行一下，比如增加一个查询总数量的sql，进行分页-->
     <dependency>
       <groupId>com.github.pagehelper</groupId>
       <artifactId>pagehelper</artifactId>

@@ -6,8 +6,10 @@ import org.apache.ibatis.annotations.Param;
 public interface UserMapper {
     int deleteByPrimaryKey(Integer id);
 
+    /*完全插入进去*/
     int insert(User record);
 
+    /*判断传进来的某些字段是否为空，如果不为空才插入*/
     int insertSelective(User record);
 
     User selectByPrimaryKey(Integer id);

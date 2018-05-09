@@ -57,6 +57,8 @@
         <property name="validationQuery" value="SELECT 1 FROM dual"/>
     </bean>
 
+    <!--SqlSessionFactoryBean中肯定有dataSource属性，向其中进行注入
+    mapperLocations会把mybatis中的sql实现都读取到-->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="mapperLocations" value="classpath*:mappers/*Mapper.xml"></property>
@@ -67,6 +69,7 @@
                 <bean class="com.github.pagehelper.PageHelper">
                     <property name="properties">
                         <value>
+                            <!--配置方言-->
                             dialect=mysql
                         </value>
                     </property>
@@ -76,6 +79,7 @@
 
     </bean>
 
+    <!--也是mybatis的一个扫描，会扫描dao层-->
     <bean name="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.mmall.dao"/>
     </bean>

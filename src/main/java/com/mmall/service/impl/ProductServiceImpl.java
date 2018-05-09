@@ -38,6 +38,7 @@ public class ProductServiceImpl implements IProductService {
                 }
             }
 
+            //跟前端约定更新要把id传过来，不然不知道更新哪个接口
             if(product.getId() != null){
                 int rowCount = productMapper.updateByPrimaryKey(product);
                 if(rowCount > 0){
@@ -72,7 +73,8 @@ public class ProductServiceImpl implements IProductService {
 
     public ServerResponse<ProductDetailVo> manageProductDetail(Integer productId){
         if(productId == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),
+                    ResponseCode.NEED_LOGIN.getDesc());
         }
         Product product = productMapper.selectByPrimaryKey(productId);
         if(product == null){
@@ -96,6 +98,7 @@ public class ProductServiceImpl implements IProductService {
         productDetailVo.setName(product.getName());
         productDetailVo.setSubtitle(product.getSubtitle());
 
+        //配置和代码分离，不用硬编码
         productDetailVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://img.happymmall.com/"));
 
         Category category = categoryMapper.selectByPrimaryKey(product.getCategoryId());
@@ -118,12 +121,15 @@ public class ProductServiceImpl implements IProductService {
         //pageHelper-收尾
         PageHelper.startPage(pageNum,pageSize);
         List<Product> productList = productMapper.selectList();
+        //返回的list不需要这么多属性，因为只是一个list而已，所以用下vo
         List<ProductListVo> productListVoList = Lists.newArrayList();
         for(Product product : productList){
             ProductListVo productListVo = assembleProductListVo(product);
             productListVoList.add(productListVo);
         }
+        //list扔到构造器中，就会各种算，算出起始页导航页等等
         PageInfo pageResult = new PageInfo(productList);
+        //展示给前端的是vo，result重置下就行了
         pageResult.setList(productListVoList);
         return ServerResponse.createBySuccess(pageResult);
     }

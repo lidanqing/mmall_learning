@@ -27,6 +27,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public ServerResponse<User> login(String username, String password) {
+        //添加一个查找用户名存不存在，在mapper里面加，然后再在xml里面加sql语句
         int resultCount = userMapper.checkUsername(username);
         if(resultCount == 0 ){
             return ServerResponse.createByErrorMessage("用户名不存在");
@@ -40,12 +41,13 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createByErrorMessage("密码错误");
         }
 
-        //密码置为空
+        //密码置为空,这里只是把new 的这个 user密码置为空，防止body里可以看见密码
         user.setPassword(org.apache.commons.lang3.StringUtils.EMPTY);
         return ServerResponse.createBySuccess("登录成功",user);
     }
 
     public ServerResponse<String> register(User user){
+        //在前端会检测用户名是否存在，但是通过自动调用接口的方式还是会调到这个
         ServerResponse validResponse = this.checkValid(user.getUsername(),Const.USERNAME);
         if(!validResponse.isSuccess()){
             return validResponse;
@@ -115,6 +117,7 @@ public class UserServiceImpl implements IUserService {
         if(org.apache.commons.lang3.StringUtils.isBlank(forgetToken)){
             return ServerResponse.createByErrorMessage("参数错误,token需要传递");
         }
+        //要校验下是否存在，否则token_+" ",别人能拿到value
         ServerResponse validResponse = this.checkValid(username,Const.USERNAME);
         if(validResponse.isSuccess()){
             //用户不存在
@@ -139,7 +142,8 @@ public class UserServiceImpl implements IUserService {
     }
 
     public ServerResponse<String> resetPassword(String passwordOld, String passwordNew, User user){
-        //防止横向越权，要校验一下这个用户的旧密码，一定要指定是这个用户，因为会查询一个count（1），如果不指定id，结果就是true了count>0
+        //防止横向越权，要校验一下这个用户的旧密码，一定要指定是这个用户，因为会查询一个count（1），
+        // 如果不指定id，可以拿一个字典不断试，很容易会有相同的密码，结果就是true了count>0
         int resultCount = userMapper.checkPassword(MD5Util.MD5EncodeUtf8(passwordOld), String.valueOf(user.getId()));
         if(resultCount == 0){
             return ServerResponse.createByErrorMessage("旧密码错误");
@@ -165,6 +169,7 @@ public class UserServiceImpl implements IUserService {
         updateUser.setPhone(user.getPhone());
         updateUser.setQuestion(user.getQuestion());
         updateUser.setAnswer(user.getAnswer());
+        //updateTime不用关心，在sql语句中已经用now()实现了
 
         int updateCount = userMapper.updateByPrimaryKeySelective(updateUser);
         if(updateCount > 0){

@@ -23,6 +23,7 @@ public class UserController {
 
 
     @Autowired
+    //iUserService和UserServiceImpl中的@Service("iUserService")名字一样，可以成功的注入进来
     private IUserService iUserService;
 
     /**
@@ -35,10 +36,12 @@ public class UserController {
     @RequestMapping(value = "login.do",method = RequestMethod.POST)
     //@responseBody注解的作用是将controller的方法返回的对象通过适当的转换器转换为指定的格式之后，
     // 写入到response对象的body区，通常用来返回JSON数据或者是XML
+    //返回时自动通过springMVC的jackson插件将返回值序列化为json,插件配置在springmvc配置文件中
     @ResponseBody
     public ServerResponse<User> login(String username, String password, HttpSession session){
         ServerResponse<User> response = iUserService.login(username,password);
         if(response.isSuccess()){
+            //这里的data是user对象
             session.setAttribute(Const.CURRENT_USER,response.getData());
         }
         return response;
@@ -53,12 +56,14 @@ public class UserController {
 
     @RequestMapping(value = "register.do",method = RequestMethod.POST)
     @ResponseBody
+    //直接传一个User进行包装，不需要传很多参数了
     public ServerResponse<String> register(User user){
         return iUserService.register(user);
     }
 
     @RequestMapping(value = "check_valid.do",method = RequestMethod.POST)
     @ResponseBody
+    //在前台输入一个信息后，如用户名邮箱等，进入下一栏，要实时调用验证接口，看看存不存在
     public ServerResponse<String> checkValid(String str, String type){
         return iUserService.checkValid(str,type);
     }
@@ -108,8 +113,10 @@ public class UserController {
         if(currentUser == null){
             return ServerResponse.createByErrorMessage("用户未登录");
         }
-        //防止越权问题，id被变化
+        //防止越权问题，id被变化，直接复制id
+        //传过来的user是没有id的，只有email等，需要复制成当前登录的id
         user.setId(currentUser.getId());
+        //username也是不能被更新的
         user.setUsername(currentUser.getUsername());
         ServerResponse<User> response = iUserService.updateInformation(user);
         if(response.isSuccess()){
@@ -125,6 +132,7 @@ public class UserController {
     public ServerResponse<User> get_information(HttpSession session){
         User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
         if(currentUser == null){
+            //跟前端约定，一旦status是10，前端就要强制登录
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"未登录,需要强制登录status=10");
         }
         return iUserService.getInformation(currentUser.getId());

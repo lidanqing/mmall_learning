@@ -18,6 +18,7 @@ public class PropertiesUtil {
     private static Properties props;
 
     //tomcat启动时就读取
+    //静态的代码块
     static {
         String fileName = "mmall.properties";
         props = new Properties();

@@ -153,9 +153,9 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
+  <!--/*用#防止sql注入，预编译*/-->
   <select id="checkUsername" resultType="int" parameterType="string" >
     select count(1) from mmall_user
-    /*用#防止sql注入，预编译*/
     where username = #{username}
   </select>
 
@@ -172,9 +172,9 @@
     使用${}拼接sql，可能会引起sql注入
     ${value}:接收输入参数的内容，如果传入的是简单类型,${}中只能使用value-->
   <!--小写的map会自动识别成java.util.Map-->
+  <!--/*要什么查什么，不要select* */-->
   <select id="selectLogin" resultMap="BaseResultMap" parameterType="map">
     SELECT
-    /*要什么查什么，不要select* */
     <include refid="Base_Column_List" />
     from mmall_user
     where username = #{username}

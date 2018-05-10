@@ -1,19 +1,27 @@
 package com.mmall.controller.backend;
 
+import com.google.common.collect.Maps;
 import com.mmall.common.Const;
 import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.Product;
 import com.mmall.pojo.User;
+import com.mmall.service.IFileService;
 import com.mmall.service.IProductService;
 import com.mmall.service.IUserService;
+import com.mmall.util.PropertiesUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 import java.util.Stack;
 
 @Controller
@@ -21,9 +29,11 @@ import java.util.Stack;
 public class ProductManageController {
 
     @Autowired
-    IUserService iUserService;
+    private IUserService iUserService;
     @Autowired
-    IProductService iProductService;
+    private IProductService iProductService;
+    @Autowired
+    private IFileService iFileService;
 
     @RequestMapping("save.do")
     @ResponseBody
@@ -97,5 +107,67 @@ public class ProductManageController {
         }
     }
 
+    @RequestMapping("upload.do")
+    @ResponseBody
+    public ServerResponse upload(HttpSession session,
+                                 @RequestParam(value = "upload_file",required = false) MultipartFile file, HttpServletRequest request){
+        //需要进行权限验证，如果别人恶意上传大文件，几下就搞满了
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"未登录，请登录管理员");
+        }
+        if(iUserService.checkAdminRole(user).isSuccess()){
+            //创建后的文件夹和index.jsp同级
+            String path = request.getSession().getServletContext().getRealPath("upload");
+            String targetFileName = iFileService.upload(file,path);
+            //把url存起来，在比如创建宝贝描述、商品详情中插入的图片、商品缩略图等都要通过这个
+            String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFileName;
+
+            Map fileMap = Maps.newHashMap();
+            fileMap.put("uri",targetFileName);
+            fileMap.put("url",url);
+            return ServerResponse.createBySuccess(fileMap);
+        }else{
+            return ServerResponse.createByErrorMessage("无权限操作");
+        }
+    }
+
+    @RequestMapping("richtext_img_upload.do")
+    @ResponseBody
+    public Map richtextImgUpload(HttpSession session, @RequestParam(value = "upload_file",required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response){
+        Map resultMap = Maps.newHashMap();
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            resultMap.put("success",false);
+            resultMap.put("msg","请登录管理员");
+            return resultMap;
+        }
+        //富文本中对于返回值有自己的要求,我们使用是simditor所以按照simditor的要求进行返回
+//        {
+//            "success": true/false,
+//                "msg": "error message", # optional
+//            "file_path": "[real file path]"
+//        }
+        if(iUserService.checkAdminRole(user).isSuccess()){
+            String path = request.getSession().getServletContext().getRealPath("upload");
+            String targetFileName = iFileService.upload(file,path);
+            if(StringUtils.isBlank(targetFileName)){
+                resultMap.put("success",false);
+                resultMap.put("msg","上传失败");
+                return resultMap;
+            }
+            String url = PropertiesUtil.getProperty("ftp.server.http.prefix")+targetFileName;
+            resultMap.put("success",true);
+            resultMap.put("msg","上传成功");
+            resultMap.put("file_path",url);
+            //和前端的约定，很多插件对返回值都是有要求的
+            response.addHeader("Access-Control-Allow-Headers","X-File-Name");
+            return resultMap;
+        }else{
+            resultMap.put("success",false);
+            resultMap.put("msg","无权限操作");
+            return resultMap;
+        }
+    }
 
 }

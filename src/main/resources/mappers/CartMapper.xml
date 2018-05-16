@@ -147,6 +147,13 @@
       </foreach>
     </if>
   </delete>
+  
+  <update id="checkedOrUncheckedAllProduct" parameterType="map">
+    UPDATE mmall_cart
+    SET checked = #{checked}
+    update_time = now()
+    where user_id = #{userId}
+  </update>
 
 
 

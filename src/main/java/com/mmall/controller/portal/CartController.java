@@ -60,4 +60,25 @@ public class CartController {
         }
         return iCartService.list(user.getId());
     }
+
+    @RequestMapping("select_all.do")
+    @ResponseBody
+    public ServerResponse<CartVo> selectAll(HttpSession session){
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iCartService.selectOrUnSelectAll(user.getId(),Const.Cart.CHECKED);
+    }
+
+    @RequestMapping("unselect_all.do")
+    @ResponseBody
+    public ServerResponse<CartVo> unSelectAll(HttpSession session){
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iCartService.selectOrUnSelectAll(user.getId(),Const.Cart.UN_CHECKED);
+    }
+
 }

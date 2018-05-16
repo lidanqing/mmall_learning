@@ -52,8 +52,7 @@ public class CartServiceImpl implements ICartService {
             cartMapper.updateByPrimaryKeySelective(cart);
         }
         //还有一些库存校验等功能需要联动起来
-        CartVo cartVo = this.getCartVoLimit(userId);
-        return ServerResponse.createBySuccess(cartVo);
+        return this.list(userId);
     }
 
     public ServerResponse<CartVo> update(Integer userId, Integer productId, Integer count){
@@ -65,8 +64,7 @@ public class CartServiceImpl implements ICartService {
             cart.setQuantity(count);
         }
         cartMapper.updateByPrimaryKeySelective(cart);
-        CartVo cartVo = this.getCartVoLimit(userId);
-        return ServerResponse.createBySuccess(cartVo);
+        return this.list(userId);
     }
 
     public ServerResponse<CartVo> deleteProduct(Integer userId, String productIds){
@@ -76,14 +74,19 @@ public class CartServiceImpl implements ICartService {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
         cartMapper.deleteByUserIdProductIds(userId,productList);
-        CartVo cartVo = this.getCartVoLimit(userId);
-        return ServerResponse.createBySuccess(cartVo);
+        return this.list(userId);
     }
 
+    //可以复用该方法
     public ServerResponse<CartVo> list(Integer userId){
         //cartVo里有了productCartVo的list集合
         CartVo cartVo = this.getCartVoLimit(userId);
         return ServerResponse.createBySuccess(cartVo);
+    }
+
+    public ServerResponse<CartVo> selectOrUnSelectAll(Integer userId, Integer checked){
+        cartMapper.checkedOrUncheckedAllProduct(userId,checked);
+        return this.list(userId);
     }
 
     //重新校验，并且返回 整个 大购物车

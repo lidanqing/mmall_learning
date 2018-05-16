@@ -80,6 +80,12 @@ public class CartServiceImpl implements ICartService {
         return ServerResponse.createBySuccess(cartVo);
     }
 
+    public ServerResponse<CartVo> list(Integer userId){
+        //cartVo里有了productCartVo的list集合
+        CartVo cartVo = this.getCartVoLimit(userId);
+        return ServerResponse.createBySuccess(cartVo);
+    }
+
     //重新校验，并且返回 整个 大购物车
     private CartVo getCartVoLimit(Integer userId){
         CartVo cartVo = new CartVo();

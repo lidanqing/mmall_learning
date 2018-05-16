@@ -159,6 +159,11 @@
     </if>
   </update>
 
+  <select id="selectCartProductCount" parameterType="int" resultType="int">
+    /*这样会有一个隐患，如果userId在在表中不存在，sum就为空，而dao层中返回值为int，要么改为Integer，这里用IFNULL*/
+    SELECT IFNULL(sum(quantity),0) AS count from mmall_cart WHERE user_id = #{userId}
+  </select>
+
 
 
 

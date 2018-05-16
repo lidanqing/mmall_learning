@@ -90,6 +90,14 @@ public class CartServiceImpl implements ICartService {
         return this.list(userId);
     }
 
+    public ServerResponse<Integer> getCartProductCount(Integer userId){
+        if(userId == null){
+            return ServerResponse.createBySuccess(0);
+        }
+        return ServerResponse.createBySuccess(cartMapper.selectCartProductCount(userId));
+
+    }
+
     //重新校验，并且返回 整个 大购物车
     private CartVo getCartVoLimit(Integer userId){
         CartVo cartVo = new CartVo();

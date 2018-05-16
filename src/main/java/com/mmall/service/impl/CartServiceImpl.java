@@ -84,8 +84,9 @@ public class CartServiceImpl implements ICartService {
         return ServerResponse.createBySuccess(cartVo);
     }
 
-    public ServerResponse<CartVo> selectOrUnSelectAll(Integer userId, Integer checked){
-        cartMapper.checkedOrUncheckedAllProduct(userId,checked);
+    //全选全返选单选单反选 四个会公用这一个方法
+    public ServerResponse<CartVo> selectOrUnSelect(Integer userId, Integer productId, Integer checked){
+        cartMapper.checkedOrUncheckedProduct(userId,productId,checked);
         return this.list(userId);
     }
 

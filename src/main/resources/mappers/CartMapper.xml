@@ -148,11 +148,15 @@
     </if>
   </delete>
   
-  <update id="checkedOrUncheckedAllProduct" parameterType="map">
+  <update id="checkedOrUncheckedProduct" parameterType="map">
     UPDATE mmall_cart
-    SET checked = #{checked}
+    /*set两个值时中间一定要加上逗号*/
+    SET checked = #{checked},
     update_time = now()
     where user_id = #{userId}
+    <if test="productId != null">
+      and product_id = #{productId}
+    </if>
   </update>
 
 

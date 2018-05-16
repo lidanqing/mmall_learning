@@ -68,17 +68,37 @@ public class CartController {
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
-        return iCartService.selectOrUnSelectAll(user.getId(),Const.Cart.CHECKED);
+        return iCartService.selectOrUnSelect(user.getId(),null,Const.Cart.CHECKED);
     }
 
-    @RequestMapping("unselect_all.do")
+    @RequestMapping("un_select_all.do")
     @ResponseBody
     public ServerResponse<CartVo> unSelectAll(HttpSession session){
         User user = (User) session.getAttribute(Const.CURRENT_USER);
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
-        return iCartService.selectOrUnSelectAll(user.getId(),Const.Cart.UN_CHECKED);
+        return iCartService.selectOrUnSelect(user.getId(),null,Const.Cart.UN_CHECKED);
+    }
+
+    @RequestMapping("select.do")
+    @ResponseBody
+    public ServerResponse<CartVo> select(HttpSession session, Integer productId){
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iCartService.selectOrUnSelect(user.getId(),productId,Const.Cart.CHECKED);
+    }
+
+    @RequestMapping("un_select.do")
+    @ResponseBody
+    public ServerResponse<CartVo> unSelect(HttpSession session, Integer productId){
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iCartService.selectOrUnSelect(user.getId(),productId,Const.Cart.UN_CHECKED);
     }
 
 }

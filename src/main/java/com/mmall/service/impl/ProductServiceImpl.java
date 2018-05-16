@@ -3,12 +3,14 @@ package com.mmall.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.mmall.common.Const;
 import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.dao.CategoryMapper;
 import com.mmall.dao.ProductMapper;
 import com.mmall.pojo.Category;
 import com.mmall.pojo.Product;
+import com.mmall.service.ICategoryService;
 import com.mmall.service.IProductService;
 import com.mmall.util.DateTimeUtil;
 import com.mmall.util.PropertiesUtil;
@@ -19,15 +21,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("iProductService")
 public class ProductServiceImpl implements IProductService {
 
     @Autowired
-    ProductMapper productMapper;
+    private ProductMapper productMapper;
     @Autowired
-    CategoryMapper categoryMapper;
+    private CategoryMapper categoryMapper;
+    //属于平级调用，service调用service
+    @Autowired
+    private ICategoryService iCategoryService;
 
     public ServerResponse saveOrUpdateProduct(Product product){
         if(product != null){
@@ -121,7 +127,7 @@ public class ProductServiceImpl implements IProductService {
         //pageHelper-收尾
         PageHelper.startPage(pageNum,pageSize);
         List<Product> productList = productMapper.selectList();
-        //返回的list不需要这么多属性，因为只是一个list而已，所以用下vo
+        //返回的list不需要这么多属性，因为只是一个list而已，所以用下vo,也可以减少服务器的IO
         List<ProductListVo> productListVoList = Lists.newArrayList();
         for(Product product : productList){
             ProductListVo productListVo = assembleProductListVo(product);
@@ -161,6 +167,67 @@ public class ProductServiceImpl implements IProductService {
         PageInfo pageResult = new PageInfo(productList);
         pageResult.setList(productListVoList);
         return ServerResponse.createBySuccess(pageResult);
+    }
+
+    public ServerResponse<ProductDetailVo> getProductDetail(Integer productId){
+            if(productId == null){
+                return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),
+                        ResponseCode.NEED_LOGIN.getDesc());
+            }
+            Product product = productMapper.selectByPrimaryKey(productId);
+            if(product == null){
+                return ServerResponse.createByErrorMessage("无此商品或已下架");
+            }
+        if(product.getStatus() != Const.ProductStatusEnum.ON_SALE.getCode()){
+            return ServerResponse.createByErrorMessage("无此商品或已下架");
+        }
+            //VO对象--value object
+            ProductDetailVo productDetailVo = assembleProductDetailVo(product);
+            return ServerResponse.createBySuccess(productDetailVo);
+    }
+
+    public ServerResponse<PageInfo> getProductByKeywordCategory(String keyword, Integer catagoryId, int pageNum, int pageSize, String orderBy){
+        if(StringUtils.isBlank(keyword) && catagoryId == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
+        }
+        //给一个大的分类，需要把它本身和它的子分类都给找出来呀
+        List<Integer> categoryIdList = new ArrayList<Integer>();
+        if(catagoryId != null){
+            Category category = categoryMapper.selectByPrimaryKey(catagoryId);
+            if(category == null && StringUtils.isBlank(keyword)){
+                //没有该分类，并且还没有关键字，这时返回一个空的结果集，不报错，因为这不是错误，只是没有命中而已
+                PageHelper.startPage(pageNum,pageSize);
+                List<ProductListVo> productListVoList = Lists.newArrayList();
+                PageInfo pageInfo = new PageInfo(productListVoList);
+                return ServerResponse.createBySuccess(pageInfo);
+            }
+            categoryIdList = iCategoryService.selectCategoryAndChildrenById(catagoryId).getData();
+        }
+
+        if(StringUtils.isNotBlank(keyword)){
+            keyword = new StringBuilder().append("%").append(keyword).append("%").toString();
+        }
+
+        PageHelper.startPage(pageNum,pageSize);
+        //排序处理
+        if(StringUtils.isNotBlank(orderBy)){
+            if(Const.ProductListOrderBy.PRICE_ASC_DESC.contains(orderBy)){
+                String[] orderByArray = orderBy.split("_");
+                PageHelper.orderBy(orderByArray[0] + " " +orderByArray[1]);
+            }
+        }
+        //categoryIdList为空的话，in里面就查不出来结果了
+        List<Product> productList = productMapper.selectByNameAndCategoryIds(StringUtils.isBlank(keyword)?null:keyword,categoryIdList.size()==0?null:categoryIdList);
+
+        List<ProductListVo> productListVoList = Lists.newArrayList();
+        for(Product product : productList){
+            ProductListVo productListVo = assembleProductListVo(product);
+            productListVoList.add(productListVo);
+        }
+
+        PageInfo pageInfo = new PageInfo(productList);
+        pageInfo.setList(productListVoList);
+        return ServerResponse.createBySuccess(pageInfo);
     }
 }
 

@@ -177,11 +177,11 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <select id="selectList" resultMap="BaseResultMap">
+  <!--/*pagehelper会自动的在后面加上比如limit 10 offset 1,所以末尾不要加分号*/-->
+  <select id="selectList" resultMap="BaseResultMap" >
     SELECT
     <include refid="Base_Column_List"/>
-    form mmall_product
-    /*pagehelper会自动的在后面加上比如limit 10 offset 1,所以末尾不要加分号*/
+    from mmall_product
     ORDER BY id asc
   </select>
 
@@ -199,5 +199,21 @@
     </if>
   </where>
 </select>
+
+  <select id="selectByNameAndCategoryIds" resultMap="BaseResultMap" parameterType="map">
+    SELECT
+    <include refid="Base_Column_List"></include>
+    from mmall_product
+    where status = 1
+    <if test="productName != null">
+      and name like #{productName}
+    </if>
+    <if test="categoryIdList != null" >
+      and category_id in
+      <foreach item="item" index="index" open="(" separator="," close=")" collection="categoryIdList">
+        #{item}
+      </foreach>
+    </if>
+  </select>
 
 </mapper>

@@ -65,7 +65,7 @@ public class CategoryServiceImpl implements ICategoryService {
         return ServerResponse.createBySuccess(categoryList);
     }
 
-    public ServerResponse selectCategoryAndChildrenById(Integer categoryId){
+    public ServerResponse<List<Integer>> selectCategoryAndChildrenById(Integer categoryId){
         //guava提供的方法
         Set<Category> categorySet = Sets.newHashSet();
         findChildCategory(categorySet,categoryId);

@@ -101,6 +101,7 @@ public class CartController {
         return iCartService.selectOrUnSelect(user.getId(),productId,Const.Cart.UN_CHECKED);
     }
 
+    //首页上购物车的小图标上标记的数量
     @RequestMapping("get_cart_product_count.do")
     @ResponseBody
     public ServerResponse<Integer> getCartProductCount(HttpSession session){

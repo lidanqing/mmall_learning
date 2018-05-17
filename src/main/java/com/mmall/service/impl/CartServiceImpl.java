@@ -114,6 +114,7 @@ public class CartServiceImpl implements ICartService {
                 cartProductVo.setUserId(userId);
                 cartProductVo.setProductId(cartItem.getProductId());
                 Product product = productMapper.selectByPrimaryKey(cartItem.getProductId());
+                //这里如果productId不存在的话，request会显示500，body会出错的
                 if(product != null){
                     cartProductVo.setProductMainImage(product.getMainImage());
                     cartProductVo.setProductName(product.getName());

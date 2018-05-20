@@ -204,6 +204,7 @@
 
 
     <!-- alipay -->
+    <!--支付宝对接依赖的jar包，和官方demo的版本都一致-->
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
@@ -262,6 +263,7 @@
       </plugin>
 
       <!-- geelynote maven的核心插件之-complier插件默认只支持编译Java 1.4，因此需要加上支持高版本jre的配置，在pom.xml里面加上 增加编译插件 -->
+      <!--把本地的aplipay的jar包也发布到服务器上，如果不，会发生classNotFound的异常-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>

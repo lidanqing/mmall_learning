@@ -164,6 +164,13 @@
     SELECT IFNULL(sum(quantity),0) AS count from mmall_cart WHERE user_id = #{userId}
   </select>
 
+  <select id="selectCheckedCartByUserId" parameterType="int" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM mmall_cart
+    WHERE user_id = #{userId}
+    and checked = 1;
+  </select>
 
 
 

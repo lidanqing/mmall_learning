@@ -172,6 +172,13 @@
     and user_id = #{userId}
   </select>
 
+  <select id="getByOrderNo" parameterType="map" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM mmall_order_item
+    WHERE order_no = #{orderNo}
+  </select>
+
   <!--也有事务的特性-->
   <insert id="batchInsert" parameterType="list">
     insert into mmall_order_item (id, order_no, user_id, product_id,

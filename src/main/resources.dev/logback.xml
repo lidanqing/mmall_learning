@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--logger很重要，实际开发时，就可以看到mybatis实际执行的sql语句是啥样的-->
+<!--scan：当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true.
+scanPeriod：设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。当scan为true时，此属性生效。默认的时间间隔为1分钟.
+debug：当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。-->
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    //把日志添加到控制台
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoding>UTF-8</encoding>
+        <encoder>
+            <pattern>[%d{HH:mm:ss.SSS}][%p][%c{40}][%t] %m%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+    </appender>
+
+    //滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件
+    <appender name="mmall" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--<File>d:/mmalllog/mmall.log</File>-->
+        <File>D:/java/tomcat/apache-tomcat-8.0.43-windows-x64/apache-tomcat-8.0.43/logs/mmall.log</File>
+        //rollingPolicy:当发生滚动时，决定 RollingFileAppender 的行为，涉及文件移动和重命名。
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>D:/java/tomcat/apache-tomcat-8.0.43-windows-x64/apache-tomcat-8.0.43/logs/mmall.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            //如果是 true，日志被追加到文件结尾，如果是 false，清空现存文件，默认是true。
+            <append>true</append>
+            <maxHistory>10</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>[%d{HH:mm:ss.SSS}][%p][%c{40}][%t] %m%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--<File>d:/mmalllog/error.log</File>-->
+        <File>/developer/apache-tomcat-7.0.73/logs/error.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>D:/java/tomcat/apache-tomcat-8.0.43-windows-x64/apache-tomcat-8.0.43/logs/error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <!--<fileNamePattern>d:/mmalllog/error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>-->
+            <append>true</append>
+            <maxHistory>10</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>[%d{HH:mm:ss.SSS}][%p][%c{40}][%t] %m%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    //additivity：是否向上级logger传递打印信息。默认是true。
+    <logger name="com.mmall" additivity="false" level="INFO" >
+        <appender-ref ref="mmall" />
+        <appender-ref ref="console"/>
+    </logger>
+
+
+
+    <!-- geelynote mybatis log 日志 -->
+
+    //这样就可以查看dao层的sql，实际操作时可以看到myBatis执行的sql语句啥样了
+    <logger name="com.mmall.dao" level="DEBUG"/>
+
+    <!--<logger name="com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate" level="DEBUG" >-->
+        <!--<appender-ref ref="console"/>-->
+    <!--</logger>-->
+
+    <!--<logger name="java.sql.Connection" level="DEBUG">-->
+        <!--<appender-ref ref="console"/>-->
+    <!--</logger>-->
+    <!--<logger name="java.sql.Statement" level="DEBUG">-->
+        <!--<appender-ref ref="console"/>-->
+    <!--</logger>-->
+
+    <!--<logger name="java.sql.PreparedStatement" level="DEBUG">-->
+        <!--<appender-ref ref="console"/>-->
+    <!--</logger>-->
+
+    //也是logger元素，但是它是根logger。只有一个level属性，应为已经被命名为”root”.
+    <root level="DEBUG">
+        <appender-ref ref="console"/>
+        <appender-ref ref="error"/>
+    </root>
+
+</configuration>

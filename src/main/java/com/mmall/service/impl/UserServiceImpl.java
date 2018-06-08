@@ -107,7 +107,8 @@ public class UserServiceImpl implements IUserService {
         if(resultCount > 0){
             //说明问题及问题答案是这个用户的，并且是正确的
             String forgetToken = UUID.randomUUID().toString();
-            TokenCache.setKey("token_"+username, forgetToken);
+            //存在tomcat服務中的，內存中
+            TokenCache.setKey(TokenCache.TOKEN_PREFIX+username, forgetToken);
             return ServerResponse.createBySuccess(forgetToken);
         }
         return ServerResponse.createByErrorMessage("问题答案错误");

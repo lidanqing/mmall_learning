@@ -2,16 +2,15 @@ package com.mmall.service.impl;
 
 import com.mmall.common.Const;
 import com.mmall.common.ServerResponse;
-import com.mmall.common.TokenCache;
 import com.mmall.dao.UserMapper;
 import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
 import com.mmall.util.MD5Util;
+import com.mmall.util.RedisPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpSession;
 import java.util.UUID;
 
 
@@ -108,12 +107,14 @@ public class UserServiceImpl implements IUserService {
             //说明问题及问题答案是这个用户的，并且是正确的
             String forgetToken = UUID.randomUUID().toString();
             //存在tomcat服務中的，內存中
-            TokenCache.setKey(TokenCache.TOKEN_PREFIX+username, forgetToken);
+            //TokenCache.setKey(TokenCache.TOKEN_PREFIX+username,forgetToken);
+            RedisPoolUtil.setEx(Const.TOKEN_PREFIX+username,forgetToken,60*60*12);
             return ServerResponse.createBySuccess(forgetToken);
         }
         return ServerResponse.createByErrorMessage("问题答案错误");
     }
 
+    //防止橫向越權
     public ServerResponse<String> forgetResetPassword(String username,String passwordNew,String forgetToken){
         if(org.apache.commons.lang3.StringUtils.isBlank(forgetToken)){
             return ServerResponse.createByErrorMessage("参数错误,token需要传递");
@@ -124,7 +125,8 @@ public class UserServiceImpl implements IUserService {
             //用户不存在
             return ServerResponse.createByErrorMessage("用户不存在");
         }
-        String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX+username);
+        //String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX+username);
+        String token = RedisPoolUtil.get(Const.TOKEN_PREFIX+username);
         if(org.apache.commons.lang3.StringUtils.isBlank(token)){
             return ServerResponse.createByErrorMessage("token无效或者过期");
         }

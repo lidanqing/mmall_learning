@@ -38,6 +38,11 @@ public class UserSpringSessionController {
     @RequestMapping(value = "login.do",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<User> login(String username, String password, HttpSession session, HttpServletResponse httpServletResponse){
+        //测试全局异常
+        int j = 666 / 0;
+
+        //网站上线后，不希望具体的哪个类哪一行报错公布出来，如果异常和数据库相关，甚至会把sql语句打印出来
+        //防止一些机密信息泄露
 
         ServerResponse<User> response = iUserService.login(username,password);
         if(response.isSuccess()){

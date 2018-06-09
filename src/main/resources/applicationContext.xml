@@ -12,8 +12,14 @@
     <!--spring容器的主配置-->
 
     <!--自动扫描包下的注解，方便注入-->
-    <context:component-scan base-package="com.mmall" annotation-config="true"/>
+    <!--扫描controller的职责不应该是spring容器中的，应该交给dispatcher-servlet-->
+    <!--扫描的包要是基类，要全昂-->
+    <context:component-scan base-package="com.mmall" annotation-config="true">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
 
+    <!--//对已经注册的bean进行操作的配置，使用这个配置可以对已经注册的bean进行某些操作，
+    比如注入到某个类的内部-->
     <!--<context:annotation-config/>-->
     <aop:aspectj-autoproxy/>
 

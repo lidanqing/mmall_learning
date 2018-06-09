@@ -18,6 +18,7 @@
     <aop:aspectj-autoproxy/>
 
     <!--配置文件进行分离到这个.xml里面-->
+    <import resource="applicationContext-spring-session.xml"/>
     <import resource="applicationContext-datasource.xml"/>
 
 

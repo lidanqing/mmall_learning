@@ -229,10 +229,22 @@
     ORDER BY create_time desc
   </select>
 
+  <select id="selectOrderStatusByCreateTime" resultMap="BaseResultMap" parameterType="map">
+    SELECT
+    <include refid="Base_Column_List"/>
+    from mmall_order
+    where status = #{status}
+    /*写xml时很多符号需要转义，这里的小于等于*/
+    <![CDATA[
+    and create_time <= #{date}
+    ]]>
+    order by create_time desc
+  </select>
 
-
-
-
-
+  <update id="closeOrderByOrderId" parameterType="int" >
+    UPDATE mmall_order
+    SET status = 0
+    where id = #{id}
+  </update>
 
 </mapper>

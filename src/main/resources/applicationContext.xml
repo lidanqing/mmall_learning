@@ -3,11 +3,11 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="
-     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
-     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
     <!--spring容器的主配置-->
 
@@ -22,6 +22,12 @@
     比如注入到某个类的内部-->
     <!--<context:annotation-config/>-->
     <aop:aspectj-autoproxy/>
+
+    <!-- 二期新增spring schedule的时候新增的 -->
+    <!--datasource.xml中可以显示引用的变量-->
+    <context:property-placeholder location="classpath:datasource.properties"/>
+    <!--schedule配置-->
+    <task:annotation-driven/>
 
     <!--配置文件进行分离到这个.xml里面-->
     <import resource="applicationContext-spring-session.xml"/>

@@ -216,4 +216,13 @@
     </if>
   </select>
 
+  <select id="selectStockByProductId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+    select
+    stock
+    from mmall_product
+    where id = #{id}
+    /*为了保证库存的一致性，增加悲观锁，一定要使用主键，否则就变成了表锁，现在是行锁*/
+    for update
+  </select>
+
 </mapper>

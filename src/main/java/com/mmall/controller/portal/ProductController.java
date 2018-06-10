@@ -4,11 +4,10 @@ import com.github.pagehelper.PageInfo;
 import com.mmall.common.ServerResponse;
 import com.mmall.service.IProductService;
 import com.mmall.vo.ProductDetailVo;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/product/")
@@ -23,6 +22,13 @@ public class ProductController {
         return iProductService.getProductDetail(productId);
     }
 
+    //不是所有的都适合用restful改造，比如增加收货人地址，url会很长很长的
+    @RequestMapping(value = "/{productId}", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<ProductDetailVo> detailRESTful(@PathVariable Integer productId){
+        return iProductService.getProductDetail(productId);
+    }
+
     @RequestMapping("list.do")
     @ResponseBody
     public ServerResponse<PageInfo> list(@RequestParam(value = "keyword",required = false) String keyword,
@@ -31,6 +37,69 @@ public class ProductController {
                                          @RequestParam(value = "pageSize",defaultValue = "10")int pageSize,
                                          @RequestParam(value = "orderBy",defaultValue = "")String orderBy){
         return iProductService.getProductByKeywordCategory(keyword,catagoryId,pageNum,pageSize,orderBy);
+    }
+
+    //用restful
+    //http://www.happymmall.com/product/手机/100012/1/10/price_asc
+    @RequestMapping(value = "/{keyword}/{categoryId}/{pageNum}/{pageSize}/{orderBy}", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<PageInfo> listRESTful(@PathVariable(value = "keyword") String keyword,
+                                         @PathVariable(value = "categoryId")Integer categoryId,
+                                         @PathVariable(value = "pageNum")Integer pageNum,
+                                         @PathVariable(value = "pageSize")Integer pageSize,
+                                         @PathVariable(value = "orderBy")String orderBy){
+        if(pageNum == null){
+            pageNum = 1;
+        }
+        if(pageSize == null){
+            pageSize = 10;
+        }
+        if(StringUtils.isBlank(orderBy)){
+            orderBy = "price_asc";
+        }
+        return iProductService.getProductByKeywordCategory(keyword,categoryId,pageNum,pageSize,orderBy);
+    }
+
+    //需要自定义一个资源占位，比如这里的keword，防止模棱两可找不到
+    //http://www.happymmall.com/product/keyword/手机/1/10/price_asc
+    @RequestMapping(value = "/keyword/{keyword}/{pageNum}/{pageSize}/{orderBy}",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<PageInfo> listRESTful(@PathVariable(value = "keyword")String keyword,
+                                                @PathVariable(value = "pageNum") Integer pageNum,
+                                                @PathVariable(value = "pageSize") Integer pageSize,
+                                                @PathVariable(value = "orderBy") String orderBy){
+        if(pageNum == null){
+            pageNum = 1;
+        }
+        if(pageSize == null){
+            pageSize = 10;
+        }
+        if(StringUtils.isBlank(orderBy)){
+            orderBy = "price_asc";
+        }
+
+        return iProductService.getProductByKeywordCategory(keyword,null,pageNum,pageSize,orderBy);
+    }
+
+
+    //http://www.happymmall.com/product/category/100012/1/10/price_asc
+    @RequestMapping(value = "/category/{categoryId}/{pageNum}/{pageSize}/{orderBy}",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<PageInfo> listRESTful(@PathVariable(value = "categoryId")Integer categoryId,
+                                                @PathVariable(value = "pageNum") Integer pageNum,
+                                                @PathVariable(value = "pageSize") Integer pageSize,
+                                                @PathVariable(value = "orderBy") String orderBy){
+        if(pageNum == null){
+            pageNum = 1;
+        }
+        if(pageSize == null){
+            pageSize = 10;
+        }
+        if(StringUtils.isBlank(orderBy)){
+            orderBy = "price_asc";
+        }
+
+        return iProductService.getProductByKeywordCategory("",categoryId,pageNum,pageSize,orderBy);
     }
 
 }

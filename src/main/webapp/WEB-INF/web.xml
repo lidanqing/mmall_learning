@@ -34,14 +34,14 @@
         <url-pattern>*.do</url-pattern>
     </filter-mapping>
 
-    <filter>
+    <!--<filter>
         <filter-name>springSessionRepositoryFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>springSessionRepositoryFilter</filter-name>
         <url-pattern>*.do</url-pattern>
-    </filter-mapping>
+    </filter-mapping>-->
 
     <!--web容器启动和关闭的监听器-->
     <listener>
@@ -78,9 +78,14 @@
 
 
 
-    <servlet-mapping>
+    <!--<servlet-mapping>
         <servlet-name>dispatcher</servlet-name>
         <url-pattern>*.do</url-pattern>
+    </servlet-mapping>-->
+
+    <servlet-mapping>
+        <servlet-name>dispatcher</servlet-name>
+        <url-pattern>/</url-pattern>
     </servlet-mapping>
 
 </web-app>

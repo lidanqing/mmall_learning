@@ -37,7 +37,7 @@ public class ShippingController {
     @ResponseBody
     public ServerResponse add(HttpServletRequest httpServletRequest, Shipping shipping){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -52,7 +52,7 @@ public class ShippingController {
     @ResponseBody
     public ServerResponse del(HttpServletRequest httpServletRequest, Integer shippingId){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -67,7 +67,7 @@ public class ShippingController {
     @ResponseBody
     public ServerResponse update(HttpServletRequest httpServletRequest, Shipping shipping){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -82,7 +82,7 @@ public class ShippingController {
     @ResponseBody
     public ServerResponse<Shipping> select(HttpServletRequest httpServletRequest, Integer shippingId){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -99,7 +99,7 @@ public class ShippingController {
                                          @RequestParam(value = "pageSize",defaultValue = "10")int pageSize,
                                          HttpServletRequest httpServletRequest){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);

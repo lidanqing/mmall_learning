@@ -30,7 +30,7 @@ public class CartController {
     @ResponseBody
     public ServerResponse<CartVo> add(HttpServletRequest httpServletRequest, Integer count, Integer productId){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -45,7 +45,7 @@ public class CartController {
     @ResponseBody
     public ServerResponse<CartVo> update(HttpServletRequest httpServletRequest, Integer count, Integer productId){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -61,7 +61,7 @@ public class CartController {
     //删除商品时可能一下删除多个商品，跟前端约定好传一个字符串，用逗号隔开
     public ServerResponse<CartVo> deleteProduct(HttpServletRequest httpServletRequest, String productIds){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -76,7 +76,7 @@ public class CartController {
     @ResponseBody
     public ServerResponse<CartVo> list(HttpServletRequest httpServletRequest){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -91,7 +91,7 @@ public class CartController {
     @ResponseBody
     public ServerResponse<CartVo> selectAll(HttpServletRequest httpServletRequest){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -106,7 +106,7 @@ public class CartController {
     @ResponseBody
     public ServerResponse<CartVo> unSelectAll(HttpServletRequest httpServletRequest){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -121,7 +121,7 @@ public class CartController {
     @ResponseBody
     public ServerResponse<CartVo> select(HttpServletRequest httpServletRequest, Integer productId){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -136,7 +136,7 @@ public class CartController {
     @ResponseBody
     public ServerResponse<CartVo> unSelect(HttpServletRequest httpServletRequest, Integer productId){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -152,7 +152,7 @@ public class CartController {
     @ResponseBody
     public ServerResponse<Integer> getCartProductCount(HttpServletRequest httpServletRequest){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);

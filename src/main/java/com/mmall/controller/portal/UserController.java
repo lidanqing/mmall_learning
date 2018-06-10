@@ -84,7 +84,7 @@ public class UserController {
     public ServerResponse<User> getUserInfo(HttpServletRequest httpServletRequest){
         //User user = (User)session.getAttribute(Const.CURRENT_USER);
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -117,7 +117,7 @@ public class UserController {
     @ResponseBody
     public ServerResponse<String> resetPassword(HttpServletRequest httpServletRequest, String passwordOld, String passwordNew){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -132,7 +132,7 @@ public class UserController {
     @ResponseBody
     public ServerResponse<User> update_information(HttpServletRequest httpServletRequest, User user){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -159,7 +159,7 @@ public class UserController {
     @ResponseBody
     public ServerResponse<User> get_information(HttpServletRequest httpServletRequest){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);

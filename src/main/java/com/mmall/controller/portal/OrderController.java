@@ -41,7 +41,7 @@ public class OrderController {
     @ResponseBody
     public ServerResponse create(HttpServletRequest httpServletRequest, Integer shippingId){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -56,7 +56,7 @@ public class OrderController {
     @ResponseBody
     public ServerResponse cancel(HttpServletRequest httpServletRequest, Long orderNo){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -72,7 +72,7 @@ public class OrderController {
     @ResponseBody
     public ServerResponse getOrderCartProduct(HttpServletRequest httpServletRequest){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -87,7 +87,7 @@ public class OrderController {
     @ResponseBody
     public ServerResponse detail(HttpServletRequest httpServletRequest, Long orderNo){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -103,7 +103,7 @@ public class OrderController {
     @ResponseBody
     public ServerResponse list(HttpServletRequest httpServletRequest, @RequestParam(value = "pageNum",defaultValue = "1" ) Integer pageNum, @RequestParam(value = "pageSize",defaultValue = "10" )Integer pageSize){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -119,7 +119,7 @@ public class OrderController {
     @ResponseBody
     public ServerResponse pay(HttpServletRequest httpServletRequest, Long orderNo, HttpServletRequest request){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);
@@ -175,7 +175,7 @@ public class OrderController {
     @ResponseBody
     public ServerResponse<Boolean> queryOrderPayStatus(HttpServletRequest httpServletRequest, Long orderNo){
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
-        if(StringUtils.isNotEmpty(loginToken)){
+        if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获得用户登录信息");
         }
         String userJsonStr = RedisShardedPoolUtil.get(loginToken);

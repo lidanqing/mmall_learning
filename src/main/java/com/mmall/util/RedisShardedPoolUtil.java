@@ -109,6 +109,7 @@ public class RedisShardedPoolUtil {
         return result;
     }
 
+    //分布式锁用到的
     public static Long setnx(String key,String value){
         ShardedJedis jedis = null;
         Long result = null;

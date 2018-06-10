@@ -52,6 +52,13 @@ public class AuthorityInterceptor implements HandlerInterceptor {
         }
         //上面这玩意可以用来打印日志，看到请求参数之类的
 
+        //也可以在springmvc配置文件中配置<mvc:exclude-mapping path="/manage/user/login.do"/>
+        if(StringUtils.equals(className,"UserManageController") && StringUtils.equals(methodName,"login")){
+            log.info("权限拦截器拦截到请求,className:{},methodName:{}",className,methodName);
+            //如果是拦截到登录请求，不打印参数，因为参数里面有密码，全部会打印到日志中，防止日志泄露
+            return true;
+        }
+
         User user = null;
 
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);

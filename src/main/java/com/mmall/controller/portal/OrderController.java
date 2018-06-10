@@ -67,7 +67,7 @@ public class OrderController {
         return iOrderService.cancelOrder(user.getId(),orderNo);
     }
 
-    //获取购物车中已勾选的商品详情
+    //获取购物车中已勾选的商品详情，为了以后的预下单做准备
     @RequestMapping("get_order_cart_product.do")
     @ResponseBody
     public ServerResponse getOrderCartProduct(HttpServletRequest httpServletRequest){

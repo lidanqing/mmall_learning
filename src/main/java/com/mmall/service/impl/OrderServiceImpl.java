@@ -49,10 +49,15 @@ public class OrderServiceImpl implements IOrderService {
 
     @Autowired
     private OrderMapper orderMapper;
+    @Autowired
     private OrderItemMapper orderItemMapper;
+    @Autowired
     private PayInfoMapper payInfoMapper;
+    @Autowired
     private CartMapper cartMapper;
+    @Autowired
     private ProductMapper productMapper;
+    @Autowired
     private ShippingMapper shippingMapper;
 
     public ServerResponse createOrder(Integer userId, Integer shippingId){
@@ -212,7 +217,7 @@ public class OrderServiceImpl implements IOrderService {
 
     private ServerResponse getCartOrderItem(Integer userId, List<Cart> cartList){
         List<OrderItem> orderItemList = Lists.newArrayList();
-        if(CollectionUtils.isEmpty(orderItemList)){
+        if(CollectionUtils.isEmpty(cartList)){
             return ServerResponse.createByErrorMessage("购物车为空");
         }
 
@@ -220,6 +225,7 @@ public class OrderServiceImpl implements IOrderService {
         for(Cart cartItem : cartList){
             OrderItem orderItem = new OrderItem();
             Product product = productMapper.selectByPrimaryKey(cartItem.getProductId());
+            //小bug,product为空咋办
             if(Const.ProductStatusEnum.ON_SALE.getCode() != product.getStatus()){
                 return ServerResponse.createByErrorMessage("产品" + product.getName() + "不是在线售卖状态");
             }

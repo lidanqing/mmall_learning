@@ -15,8 +15,6 @@ import java.util.Date;
 public class OrderItem {
     private Integer id;
 
-    private Integer userId;
-
     private Long orderNo;
 
     private Integer productId;
@@ -34,5 +32,8 @@ public class OrderItem {
     private Date createTime;
 
     private Date updateTime;
+
+    private Integer userId;
+
 
 }

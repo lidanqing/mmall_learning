@@ -58,7 +58,7 @@ public class OrderManageController {
 
     @RequestMapping("detail.do")
     @ResponseBody
-    public ServerResponse<OrderVo> orderList(Long orderNo){
+    public ServerResponse<OrderVo> detail(Long orderNo){
 
         /*String loginToken = CookieUtil.readLoginToken(httpServletRequest);
         if(StringUtils.isNotEmpty(loginToken)){

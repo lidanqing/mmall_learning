@@ -63,12 +63,14 @@ public class RedisShardedPoolUtil {
         return result;
     }
 
+    //分布式锁用到的
     public static String getSet(String key,String value){
         ShardedJedis jedis = null;
         String result = null;
 
         try {
             jedis = RedisShardedPool.getJedis();
+            //这玩意具有原子性
             result = jedis.getSet(key,value);
         } catch (Exception e) {
             log.error("getset key:{} value:{} error",key,value,e);
@@ -116,6 +118,7 @@ public class RedisShardedPoolUtil {
 
         try {
             jedis = RedisShardedPool.getJedis();
+            //这玩意也具有原子性
             result = jedis.setnx(key,value);
         } catch (Exception e) {
             log.error("setnx key:{} value:{} error",key,value,e);

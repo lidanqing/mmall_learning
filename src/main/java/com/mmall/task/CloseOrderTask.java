@@ -92,7 +92,8 @@ public class CloseOrderTask {
         RLock lock = redissonManager.getRedisson().getLock(Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK);
         boolean getLock = false;
         try {
-            if(getLock = lock.tryLock(1,5, TimeUnit.SECONDS)){
+            //waittime现在最好设置为0，否则无法预估执行时间，可能时间非常短，两头都拿到了分布式锁，执行两次
+            if(getLock = lock.tryLock(0,5, TimeUnit.SECONDS)){
                 log.info("Redisson获取到分布式锁:{},ThreadName:{}",Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK,Thread.currentThread().getName());
                 int hour = Integer.parseInt(PropertiesUtil.getProperty("close.order.task.time.hour","2"));
                 iOrderService.closeOrder(hour);
